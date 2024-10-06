@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horror Character Maker</title>
+    <style id="theme-style">
+        /* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        #theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        #character-maker {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ef476f;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px 0;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #character-output {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s;
+            border: 2px solid transparent; /* Default outer border */
+        }
+
+        #character-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .card {
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #ef476f; /* Default border color for the card */
+        }
+
+        /* Light mode styles (Light with Red Accents) */
+        .light-mode {
+            background-color: #f9f9f9;
+            color: #000;
+        }
+
+        .light-mode #character-maker {
+            background-color: #fff;
+        }
+
+        .light-mode input,
+        .light-mode select,
+        .light-mode textarea {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .light-mode button {
+            background-color: #ef476f;
+            color: #fff;
+        }
+
+        .light-mode button:hover {
+            background-color: #d83d5f;
+        }
+
+        /* Dark mode styles (Dark with Light Blue Accents) */
+        .dark-mode {
+            background-color: #222;
+            color: #fff;
+        }
+
+        .dark-mode #character-maker {
+            background-color: #333;
+        }
+
+        .dark-mode input,
+        .dark-mode select,
+        .dark-mode textarea {
+            background-color: #444;
+            color: #fff;
+            border: 2px solid #1e90ff; /* Input border color */
+        }
+
+        .dark-mode button {
+            background-color: #1e90ff;
+            color: #fff;
+        }
+
+        .dark-mode button:hover {
+            background-color: #1a78b6;
+        }
+
+        /* Updated styles for character output box in dark mode */
+        .dark-mode #character-output {
+            background-color: #555; /* Darker background for output */
+            border: 2px solid #555; /* Outer border color remains the same */
+        }
+
+        /* Updated styles for card in dark mode */
+        .dark-mode .card {
+            border: 2px solid #1e90ff; /* Change the inner card border color to blue */
+        }
+
+        /* Cookie consent banner */
+        #cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        #cookie-consent.hidden {
+            transform: translateY(100%);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            #character-maker {
+                padding: 15px;
+            }
+
+            button {
+                padding: 12px;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <div id="theme-toggle">
+        <button id="toggle-button">Switch to Dark Mode</button>
+    </div>
+
+    <div id="character-maker">
+        <h1>Create Your Horror Character</h1>
+        <form id="character-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+
+            <label for="type">Type:</label>
+            <select id="type" required>
+                <option value="vampire">Vampire</option>
+                <option value="ghost">Ghost</option>
+                <option value="zombie">Zombie</option>
+                <option value="werewolf">Werewolf</option>
+                <option value="monster">Monster</option>
+                <option value="witch">Witch</option>
+                <option value="demon">Demon</option>
+                <option value="mummy">Mummy</option>
+                <option value="golem">Golem</option>
+                <option value="vampire hunter">Vampire Hunter</option>
+                <option value="serial killer">Serial Killer</option>
+                <option value="psychopath">Psychopath</option>
+            </select>
+
+            <label for="unique-trait">Unique Trait:</label>
+            <input type="text" id="unique-trait" required>
+
+            <label for="killing-method">Killing Method:</label>
+            <input type="text" id="killing-method" required>
+
+            <label for="killing-reason">Killing Reason:</label>
+            <select id="killing-reason" required>
+                <option value="revenge">Revenge</option>
+                <option value="power">Power</option>
+                <option value="hunger">Hunger</option>
+                <option value="broken">Broken (traumatic past)</option>
+                <option value="obsession">Obsession</option>
+                <option value="survival">Survival</option>
+                <option value="for fun">For Fun</option>
+            </select>
+
+            <label for="when-do-you-kill">When Do You Kill?</label>
+            <textarea id="when-do-you-kill" rows="2" required></textarea>
+
+            <label for="signature-move">Signature Move:</label>
+            <input type="text" id="signature-move" required>
+
+            <label for="theme-music">Theme Music:</label>
+            <input type="text" id="theme-music" placeholder="Enter frightful song name...">
+
+            <label for="favorite-quote">Favorite Quote:</label>
+            <input type="text" id="favorite-quote" placeholder="Enter a chilling quote...">
+
+            <label for="backstory-event">Backstory (Traumatic Event):</label>
+            <textarea id="backstory-event" rows="2" required></textarea>
+
+            <label for="backstory-journey">Backstory (Character Journey):</label>
+            <textarea id="backstory-journey" rows="2" required></textarea>
+
+            <label for="alignment">Alignment:</label>
+            <select id="alignment" required>
+                <option value="good">Good</option>
+                <option value="evil">Evil</option>
+                <option value="neutral">Neutral</option>
+                <option value="broken">Broken</option>
+            </select>
+
+            <label for="motivation">Motivation:</label>
+            <select id="motivation" required>
+                <option value="revenge">Revenge</option>
+                <option value="power">Power</option>
+                <option value="survival">Survival</option>
+                <option value="love">Love</option>
+                <option value="fear">Fear</option>
+                <option value="hunger">Hunger</option>
+                <option value="betrayal">Betrayal</option>
+                <option value="for fun">For Fun</option>
+            </select>
+
+            <label for="strengths">Strengths:</label>
+            <input type="text" id="strengths" required>
+
+            <label for="weaknesses">Weaknesses:</label>
+            <input type="text" id="weaknesses" required>
+
+            <label for="favorite-weapon">Favorite Weapon:</label>
+            <input type="text" id="favorite-weapon" required>
+
+            <label for="image-upload">Image of Character:</label>
+            <input type="file" id="image-upload" accept="image/*">
+
+            <label for="outfit-description">Outfit Description:</label>
+            <input type="text" id="outfit-description" placeholder="Describe the outfit...">
+
+            <button type="submit">Create Character</button>
+            <button type="button" id="reset-button">Reset</button>
+            <button type="button" id="random-button">Random Character</button>
+            <button type="button" id="save-button" class="hidden">Save Character</button>
+        </form>
+
+        <div id="character-output" class="hidden">
+            <h2>Your Horror Character</h2>
+            <div class="card">
+                <img id="character-image" src="" alt="Character Image" class="hidden">
+                <p id="output-name"></p>
+                <p id="output-type"></p>
+                <p id="output-unique-trait"></p>
+                <p id="output-killing-method"></p>
+                <p id="output-killing-reason"></p>
+                <p id="output-when-do-you-kill"></p>
+                <p id="output-signature-move"></p>
+                <p id="output-theme-music"></p>
+                <p id="output-favorite-quote"></p>
+                <p><strong>Backstory:</strong></p>
+                <p id="output-backstory-event"></p>
+                <p id="output-backstory-journey"></p>
+                <p id="output-alignment"></p>
+                <p id="output-motivation"></p>
+                <p id="output-strengths"></p>
+                <p id="output-weaknesses"></p>
+                <p id="output-favorite-weapon"></p>
+                <h3>Generated Story</h3>
+                <p id="output-story"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="cookie-consent" class="hidden">
+        <p>This website uses cookies to ensure you get the best experience on our website.</p>
+        <button id="accept-cookies">Accept Cookies</button>
+    </div>
+
+    <script>
+        // Theme toggle functionality
+        const toggleButton = document.getElementById('toggle-button');
+        const body = document.body;
+
+        toggleButton.addEventListener('click', () => {
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                toggleButton.innerText = 'Switch to Light Mode';
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                toggleButton.innerText = 'Switch to Dark Mode';
+            }
+        });
+
+        // Cookie consent functionality
+        const cookieConsent = document.getElementById('cookie-consent');
+        const acceptCookiesButton = document.getElementById('accept-cookies');
+
+        function checkCookieConsent() {
+            const cookieConsentStatus = localStorage.getItem('cookie-consent');
+            if (cookieConsentStatus === 'accepted') {
+                cookieConsent.classList.add('hidden');
+            } else {
+                cookieConsent.classList.remove('hidden');
+            }
+        }
+
+        acceptCookiesButton.addEventListener('click', () => {
+            localStorage.setItem('cookie-consent', 'accepted');
+            cookieConsent.classList.add('hidden');
+        });
+
+        checkCookieConsent();
+
+        function generateStory(character) {
+            return `${character.name}, a fearsome ${character.type}, carries the burden of their past. Once, they faced a traumatic event: ${character.backstoryEvent}. This ordeal left a mark on their soul and fueled their desire for ${character.motivation}.
+
+            As they traverse their dark journey, ${character.name} possesses a unique trait: ${character.uniqueTrait}. They are known for their strike with a killing method of: ${character.killingMethod}. With a reason rooted in ${character.killingReason}, their actions have become notorious, particularly as they kill ${character.whenDoYouKill}.
+
+            Their signature move, ${character.signatureMove}, sends shivers down the spines of their victims. Always accompanied by a haunting tune, ${character.themeMusic}, they echo through the night like a ghost. Despite their terrifying presence, whispers of their favorite quote, "${character.favoriteQuote}", linger in the dark as if echoing their twisted philosophy.
+
+            With a strong sense of ${character.alignment}, they walk the line between good and evil as they navigate the challenges that face them. 
+
+            Known for their ${character.strengths} and haunted by their ${character.weaknesses}, they wield a ${character.favoriteWeapon} with terrifying skill. Despite their power, the shadows of their past whisper uncertainty, urging them to seek redemption or vengeance.
+
+            Thus, the legend of ${character.name} unfolds in the chilling tales of the night. What awaits them in this eternal pursuit of their fate?`;
+        }
+
+        function saveCharacter() {
+            const name = document.getElementById("name").value;
+            const type = document.getElementById("type").value;
+            const uniqueTrait = document.getElementById("unique-trait").value;
+            const killingMethod = document.getElementById("killing-method").value;
+            const killingReason = document.getElementById("killing-reason").value;
+            const whenDoYouKill = document.getElementById("when-do-you-kill").value;
+            const signatureMove = document.getElementById("signature-move").value;
+            const themeMusic = document.getElementById("theme-music").value;
+            const favoriteQuote = document.getElementById("favorite-quote").value;
+            const backstoryEvent = document.getElementById("backstory-event").value;
+            const backstoryJourney = document.getElementById("backstory-journey").value;
+            const alignment = document.getElementById("alignment").value;
+            const motivation = document.getElementById("motivation").value;
+            const strengths = document.getElementById("strengths").value;
+            const weaknesses = document.getElementById("weaknesses").value;
+            const favoriteWeapon = document.getElementById("favorite-weapon").value;
+            const characterImage = document.getElementById("character-image").src;
+            const outfitDescription = document.getElementById("outfit-description").value;
+            const story = document.getElementById("output-story").innerText;
+
+            const characterData =
+                `Name: ${name}
+Type: ${type}
+Unique Trait: ${uniqueTrait}
+Killing Method: ${killingMethod}
+Killing Reason: ${killingReason}
+When Do You Kill: ${whenDoYouKill}
+Signature Move: ${signatureMove}
+Theme Music: ${themeMusic}
+Favorite Quote: "${favoriteQuote}"
+Backstory Event: ${backstoryEvent}
+Backstory Journey: ${backstoryJourney}
+Alignment: ${alignment}
+Motivation: ${motivation}
+Strengths: ${strengths}
+Weaknesses: ${weaknesses}
+Favorite Weapon: ${favoriteWeapon}
+Character Image: ${characterImage ? characterImage : "No image uploaded"}
+Outfit Description: ${outfitDescription}
+Generated Story: ${story}`;
+
+            const blob = new Blob([characterData], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${name.replace(/\s+/g, '_')}_character.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        document.getElementById("character-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const type = document.getElementById("type").value;
+            const uniqueTrait = document.getElementById("unique-trait").value;
+            const killingMethod = document.getElementById("killing-method").value;
+            const killingReason = document.getElementById("killing-reason").value;
+            const whenDoYouKill = document.getElementById("when-do-you-kill").value;
+            const signatureMove = document.getElementById("signature-move").value;
+            const themeMusic = document.getElementById("theme-music").value;
+            const favoriteQuote = document.getElementById("favorite-quote").value;
+            const backstoryEvent = document.getElementById("backstory-event").value;
+            const backstoryJourney = document.getElementById("backstory-journey").value;
+            const alignment = document.getElementById("alignment").value;
+            const motivation = document.getElementById("motivation").value;
+            const strengths = document.getElementById("strengths").value;
+            const weaknesses = document.getElementById("weaknesses").value;
+            const favoriteWeapon = document.getElementById("favorite-weapon").value;
+            const characterImage = document.getElementById("image-upload").files[0];
+
+            // Load and display the character image
+            const characterImageOutput = document.getElementById("character-image");
+            if (characterImage) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    characterImageOutput.src = e.target.result;
+                    characterImageOutput.classList.remove("hidden");
+                };
+                reader.readAsDataURL(characterImage);
+            } else {
+                characterImageOutput.classList.add("hidden");
+            }
+
+            const character = {
+                name,
+                type,
+                uniqueTrait,
+                killingMethod,
+                killingReason,
+                whenDoYouKill,
+                signatureMove,
+                themeMusic,
+                favoriteQuote,
+                backstoryEvent,
+                backstoryJourney,
+                alignment,
+                motivation,
+                strengths,
+                weaknesses,
+                favoriteWeapon,
+                outfitDescription: document.getElementById("outfit-description").value
+            };
+
+            document.getElementById("output-name").innerText = `Name: ${name}`;
+            document.getElementById("output-type").innerText = `Type: ${type}`;
+            document.getElementById("output-unique-trait").innerText = `Unique Trait: ${uniqueTrait}`;
+            document.getElementById("output-killing-method").innerText = `Killing Method: ${killingMethod}`;
+            document.getElementById("output-killing-reason").innerText = `Killing Reason: ${killingReason}`;
+            document.getElementById("output-when-do-you-kill").innerText = `When Do You Kill: ${whenDoYouKill}`;
+            document.getElementById("output-signature-move").innerText = `Signature Move: ${signatureMove}`;
+            document.getElementById("output-theme-music").innerText = `Theme Music: ${themeMusic}`;
+            document.getElementById("output-favorite-quote").innerText = `Favorite Quote: "${favoriteQuote}"`;
+            document.getElementById("output-backstory-event").innerText = `Traumatic Event: ${backstoryEvent}`;
+            document.getElementById("output-backstory-journey").innerText = `Character Journey: ${backstoryJourney}`;
+            document.getElementById("output-alignment").innerText = `Alignment: ${alignment}`;
+            document.getElementById("output-motivation").innerText = `Motivation: ${motivation}`;
+            document.getElementById("output-strengths").innerText = `Strengths: ${strengths}`;
+            document.getElementById("output-weaknesses").innerText = `Weaknesses: ${weaknesses}`;
+            document.getElementById("output-favorite-weapon").innerText = `Favorite Weapon: ${favoriteWeapon}`;
+            document.getElementById("output-story").innerText = generateStory(character);
+
+            document.getElementById("character-output").classList.remove("hidden");
+            document.getElementById("save-button").classList.remove("hidden");
+        });
+
+        document.getElementById("reset-button").addEventListener("click", function() {
+            document.getElementById("character-form").reset();
+            document.getElementById("character-output").classList.add("hidden");
+            document.getElementById("character-image").classList.add("hidden");
+            document.getElementById("save-button").classList.add("hidden");
+        });
+
+        document.getElementById("random-button").addEventListener("click", function() {
+            const names = ["Dracula", "The Phantom", "Zombified John", "Wolfman", "Invisible Woman", "Banshee", "Frankenstein", "The Boogeyman"];
+            const uniqueTraits = ["Can control shadows", "Fears silver", "Can vanish when in darkness", "Haunts old houses", "Fear of mirrors", "Master of disguise", "Unstoppable rage", "Invisibility"];
+            const killingMethods = ["Bite and drain blood", "Creeping dread", "Undead army", "Ravage flesh", "Thrice cursed dagger", "Curses and spells", "Befriends first before betraying"];
+            const killingReasons = ["Revenge", "Power", "Hunger", "Broken", "Obsession", "Survival", "For Fun"];
+            const whenDoYouKillOptions = ["At the stroke of midnight", "During the full moon", "When it rains", "In the dark alleys", "During a festival"];
+            const signatureMoves = ["Twist neck", "Quick stab", "Stealthy ambush", "Show their true face", "Psychological torment", "Play the victim"];
+            const themeMusics = ["“Somebody's Watching Me” by Rockwell", "“Thriller” by Michael Jackson", "“Ave Satani” by Jerry Goldsmith", "“The Exorcist Theme”", "“Welcome to My Nightmare” by Alice Cooper"];
+            const favoriteQuotes = ["“We all go a little mad sometimes.”", "“I am your worst nightmare.”", "“When there’s no more room in hell, the dead will walk the earth.”", "“Every man is a killer given the right excuses.”"];
+
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const randomType = document.getElementById("type").options[Math.floor(Math.random() * document.getElementById("type").options.length)].value;
+            const randomUniqueTrait = uniqueTraits[Math.floor(Math.random() * uniqueTraits.length)];
+            const randomKillingMethod = killingMethods[Math.floor(Math.random() * killingMethods.length)];
+            const randomKillingReason = killingReasons[Math.floor(Math.random() * killingReasons.length)];
+            const randomWhenDoYouKill = whenDoYouKillOptions[Math.floor(Math.random() * whenDoYouKillOptions.length)];
+            const randomSignatureMove = signatureMoves[Math.floor(Math.random() * signatureMoves.length)];
+            const randomThemeMusic = themeMusics[Math.floor(Math.random() * themeMusics.length)];
+            const randomFavoriteQuote = favoriteQuotes[Math.floor(Math.random() * favoriteQuotes.length)];
+            const randomBackstoryEvent = "Once a nobleman, betrayed by his own kin.";  // Randomize or add more options if needed
+            const randomBackstoryJourney = "Seeks to find their lost soul mate.";  // Randomize or add more options if needed
+            const randomAlignment = ["Good", "Evil", "Neutral", "Broken"][Math.floor(Math.random() * 4)];
+            const randomMotivation = ["Revenge", "Power", "Survival", "Love", "Fear", "Hunger", "Betrayal", "For Fun"][Math.floor(Math.random() * 8)];
+            const randomStrength = ["Super strength", "Cunning intellect", "Agility", "Dark magic", "Regeneration"][Math.floor(Math.random() * 5)];
+            const randomWeakness = ["Sunlight", "Water", "Holy artifacts", "Fire", "Isolation"][Math.floor(Math.random() * 5)];
+            const randomWeapon = ["Silver dagger", "Wooden stake", "Chainsaw", "Magical wand", "Machete"][Math.floor(Math.random() * 5)];
+            const randomOutfitDescription = "Tattered, black cloak with hints of red"; // Randomize this or provide user input options later
+
+            // Setting random values in the form
+            document.getElementById("name").value = randomName;
+            document.getElementById("type").value = randomType;
+            document.getElementById("unique-trait").value = randomUniqueTrait;
+            document.getElementById("killing-method").value = randomKillingMethod;
+            document.getElementById("killing-reason").value = randomKillingReason;
+            document.getElementById("when-do-you-kill").value = randomWhenDoYouKill;
+            document.getElementById("signature-move").value = randomSignatureMove;
+            document.getElementById("theme-music").value = randomThemeMusic;
+            document.getElementById("favorite-quote").value = randomFavoriteQuote;
+            document.getElementById("backstory-event").value = randomBackstoryEvent;
+            document.getElementById("backstory-journey").value = randomBackstoryJourney;
+            document.getElementById("alignment").value = randomAlignment;
+            document.getElementById("motivation").value = randomMotivation;
+            document.getElementById("strengths").value = randomStrength;
+            document.getElementById("weaknesses").value = randomWeakness;
+            document.getElementById("favorite-weapon").value = randomWeapon;
+            document.getElementById("outfit-description").value = randomOutfitDescription;
+
+            // Create the character with the random values
+            document.getElementById("character-form").dispatchEvent(new Event("submit"));
+        });
+
+        document.getElementById("save-button").addEventListener("click", saveCharacter);
+    </script>
+</body>
+
+</html>
